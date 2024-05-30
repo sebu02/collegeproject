@@ -4,25 +4,34 @@ from django.contrib.auth.models import UserManager,AbstractBaseUser,PermissionsM
 
 class Department(models.Model):
     department=models.CharField(max_length=30)
-    b1 = models.BooleanField('1styr', default=False)
-    b2 = models.BooleanField('2styr', default=False)
-    b3 = models.BooleanField('3rdyr', default=False)
+    batch=models.CharField(max_length=20)
 
 class Teacher (models.Model):
     t_id=models.AutoField(primary_key=True)
     name=models.CharField(max_length=30)
     DEPARTMENT = models.ForeignKey(Department, on_delete=models.CASCADE)
     subject=models.CharField(max_length=20)
-    phone=models.IntegerField()
+    email=models.EmailField(unique=True)
     
 
 class Student (models.Model):
     roll_no=models.IntegerField(primary_key=True)
     name=models.CharField(max_length=30)
     DEPARTMENT = models.ForeignKey(Department, on_delete=models.CASCADE)
-    phone=models.IntegerField()
+    email=models.EmailField(unique=True)
     batch=models.CharField(max_length=30)
     TEACHER = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+
+class Subject(models.Model):
+    name=models.CharField(max_length=20)
+    code=models.CharField(max_length=20,unique=True)
+    DEPARTMENT=models.ForeignKey(Department,on_delete=models.CASCADE)
+
+class Marks(models.Model):
+    STUDENT=models.ForeignKey(Student,on_delete=models.CASCADE)
+    TEACHER=models.ForeignKey(Teacher,on_delete=models.CASCADE)
+    marks=models.IntegerField()
+
 
 class CustomUser(UserManager):
     def create_user(self, email, password, **extra_fields) :
